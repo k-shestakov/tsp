@@ -35,6 +35,7 @@ print("P-value:", p_value)
 years = np.arange(2011, 2022)
 trend1 = np.polyfit(years, array_1, 1)  # [slope, intercept]
 trend2 = np.polyfit(years, array_2, 1)
+
 print(f"\nКоэффициенты линейного тренда для {array_1_name} (по годам):")
 print(f"  Уравнение: y = {trend1[0]:.4f} * x + {trend1[1]:.4f}")
 print(f"  Наклон (slope): {trend1[0]:.4f}")
@@ -44,6 +45,51 @@ print(f"\nКоэффициенты линейного тренда для {array
 print(f"  Уравнение: y = {trend2[0]:.4f} * x + {trend2[1]:.4f}")
 print(f"  Наклон (slope): {trend2[0]:.4f}")
 print(f"  Свободный член (intercept): {trend2[1]:.4f}")
+
+# Расчет значений по тренду для каждого ряда
+trend_values_1 = trend1[0] * years + trend1[1]
+trend_values_2 = trend2[0] * years + trend2[1]
+
+print(f"\nЗначения по тренду для {array_1_name}:")
+for year, value in zip(years, trend_values_1):
+    print(f"  {year}: {value:.2f}")
+
+
+print(f"\nЗначения по тренду для {array_2_name}:")
+for year, value in zip(years, trend_values_2):
+    print(f"  {year}: {value:.4f}")
+
+# Остатки (разности между фактическими и трендовыми значениями)
+residuals_1 = array_1 - trend_values_1
+residuals_2 = array_2 - trend_values_2
+
+print(f"\nОстатки для {array_1_name}:")
+for year, value in zip(years, residuals_1):
+    print(f"  {year}: {value:.2f}")
+
+print(f"\nОстатки для {array_2_name}:")
+for year, value in zip(years, residuals_2):
+    print(f"  {year}: {value:.4f}")
+
+# График остатков
+plt.figure(figsize=(8, 5))
+plt.plot(years, residuals_1, marker='o', label=f'Остатки {array_1_name}')
+plt.plot(years, residuals_2, marker='s', label=f'Остатки {array_2_name}')
+plt.axhline(0, color='gray', linestyle='--', linewidth=1)
+plt.xlabel('Год')
+plt.ylabel('Остатки')
+plt.title('Остатки (разности между фактическими и трендовыми значениями)')
+plt.legend()
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+
+# Корреляция между остатками
+correlation_resid, r2_resid, p_resid = calculate_correlation(residuals_1, residuals_2)
+print(f"\nКорреляция между остатками:")
+print("  Correlation Coefficient:", correlation_resid)
+print("  R-squared:", r2_resid)
+print("  P-value:", p_resid)
 
 # Построение графика с двумя осями Y по годам
 fig, ax1 = plt.subplots(figsize=(8, 5))
