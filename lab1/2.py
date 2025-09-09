@@ -71,17 +71,26 @@ print(f"\nОстатки для {array_2_name}:")
 for year, value in zip(years, residuals_2):
     print(f"  {year}: {value:.4f}")
 
-# График остатков
-plt.figure(figsize=(8, 5))
-plt.plot(years, residuals_1, marker='o', label=f'Остатки {array_1_name}')
-plt.plot(years, residuals_2, marker='s', label=f'Остатки {array_2_name}')
-plt.axhline(0, color='gray', linestyle='--', linewidth=1)
-plt.xlabel('Год')
-plt.ylabel('Остатки')
-plt.title('Остатки (разности между фактическими и трендовыми значениями)')
-plt.legend()
+# График остатков с двумя осями Y
+fig, ax1 = plt.subplots(figsize=(8, 5))
+
+color1 = 'tab:blue'
+ax1.set_xlabel('Год')
+ax1.set_ylabel(f'Остатки {array_1_name}', color=color1)
+ax1.plot(years, residuals_1, color=color1, marker='o', label=f'Остатки {array_1_name}')
+ax1.tick_params(axis='y', labelcolor=color1)
+ax1.axhline(0, color='gray', linestyle='--', linewidth=1)
+
+ax2 = ax1.twinx()
+color2 = 'tab:orange'
+ax2.set_ylabel(f'Остатки {array_2_name}', color=color2)
+ax2.plot(years, residuals_2, color=color2, marker='s', label=f'Остатки {array_2_name}')
+ax2.tick_params(axis='y', labelcolor=color2)
+ax2.axhline(0, color='gray', linestyle='--', linewidth=1)
+
+plt.title('Остатки (две оси Y)')
+fig.tight_layout()
 plt.grid(True)
-plt.tight_layout()
 plt.show()
 
 # Корреляция между остатками
