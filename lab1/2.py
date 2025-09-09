@@ -21,6 +21,7 @@ array_2 = np.array([9.59021,9.59326,9.64526,9.85696,10.176,10.4024,11.0865,11.21
 array_1_name = "Associates degrees awarded in Philosophy and religious studies"
 array_2_name = "Cheddar cheese consumption"
 
+
 # Perform the calculation
 print(f"Calculating the correlation between {array_1_name} and {array_2_name}...")
 correlation, r_squared, p_value = calculate_correlation(array_1, array_2)
@@ -30,22 +31,36 @@ print("Correlation Coefficient:", correlation)
 print("R-squared:", r_squared)
 print("P-value:", p_value)
 
-# Построение графика с двумя осями Y
+# Расчет коэффициентов линейного тренда для каждого ряда по годам
+years = np.arange(2011, 2022)
+trend1 = np.polyfit(years, array_1, 1)  # [slope, intercept]
+trend2 = np.polyfit(years, array_2, 1)
+print(f"\nКоэффициенты линейного тренда для {array_1_name} (по годам):")
+print(f"  Уравнение: y = {trend1[0]:.4f} * x + {trend1[1]:.4f}")
+print(f"  Наклон (slope): {trend1[0]:.4f}")
+print(f"  Свободный член (intercept): {trend1[1]:.4f}")
+
+print(f"\nКоэффициенты линейного тренда для {array_2_name} (по годам):")
+print(f"  Уравнение: y = {trend2[0]:.4f} * x + {trend2[1]:.4f}")
+print(f"  Наклон (slope): {trend2[0]:.4f}")
+print(f"  Свободный член (intercept): {trend2[1]:.4f}")
+
+# Построение графика с двумя осями Y по годам
 fig, ax1 = plt.subplots(figsize=(8, 5))
 
 color1 = 'tab:blue'
-ax1.set_xlabel('Номер наблюдения')
+ax1.set_xlabel('Год')
 ax1.set_ylabel(array_1_name, color=color1)
-ax1.plot(array_1, color=color1, marker='o', label=array_1_name)
+ax1.plot(years, array_1, color=color1, marker='o', label=array_1_name)
 ax1.tick_params(axis='y', labelcolor=color1)
 
 ax2 = ax1.twinx()
 color2 = 'tab:orange'
 ax2.set_ylabel(array_2_name, color=color2)
-ax2.plot(array_2, color=color2, marker='s', label=array_2_name)
+ax2.plot(years, array_2, color=color2, marker='s', label=array_2_name)
 ax2.tick_params(axis='y', labelcolor=color2)
 
-plt.title('Динамические ряды (две оси Y)')
+plt.title('Динамические ряды (две оси Y, по годам)')
 fig.tight_layout()
 plt.grid(True)
 plt.show()
