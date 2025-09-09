@@ -21,6 +21,50 @@ array_2 = np.array([9.59021,9.59326,9.64526,9.85696,10.176,10.4024,11.0865,11.21
 array_1_name = "Associates degrees awarded in Philosophy and religious studies"
 array_2_name = "Cheddar cheese consumption"
 
+import matplotlib.pyplot as plt
+
+# Построение графиков для двух динамических рядов в одной системе координат
+years = np.arange(1, len(array_1) + 1)
+
+fig, ax1 = plt.subplots(figsize=(10, 6))
+
+# Первый ряд на левой оси Y
+ax1.plot(years, array_1, marker='o', color='tab:blue', label=array_1_name)
+ax1.set_xlabel('Порядковый номер года')
+ax1.set_ylabel(array_1_name, color='tab:blue')
+ax1.tick_params(axis='y', labelcolor='tab:blue')
+ax1.grid(True)
+
+# Второй ряд на правой оси Y (та же ось X)
+ax2 = ax1.twinx()
+ax2.plot(years, array_2, marker='s', color='tab:orange', label=array_2_name)
+ax2.set_ylabel(array_2_name, color='tab:orange')
+ax2.tick_params(axis='y', labelcolor='tab:orange')
+
+fig.suptitle('Динамические ряды (общая ось X, отдельные оси Y)')
+fig.tight_layout(rect=[0, 0, 1, 0.96])
+
+# Сохраняем изображение
+output_path = 'dynamic_series.png'
+fig.savefig(output_path)
+
+# Показать график (если окружение позволяет)
+try:
+    plt.show()
+except Exception:
+    pass
+
+# Сохраним изображение файла, чтобы можно было проверить результат автоматически
+output_path = 'dynamic_series.png'
+plt.savefig(output_path)
+
+# Показать график (если окружение позволяет)
+try:
+    plt.show()
+except Exception:
+    # В некоторых окружениях (например, headless) show() может падать — уже сохранили файл
+    pass
+
 # Perform the calculation
 print(f"Calculating the correlation between {array_1_name} and {array_2_name}...")
 correlation, r_squared, p_value = calculate_correlation(array_1, array_2)
