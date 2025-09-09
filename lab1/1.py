@@ -6,6 +6,35 @@ lambda_param = 2.0  # интенсивность экспоненциально�
 num_trajectories = 10  # количество траекторий
 t = np.linspace(0, 10, 500)  # временная сетка
 
+# Генерация траекторий и сохранение для корреляции
+Y_all = []
+for _ in range(num_trajectories):
+	X = np.random.exponential(1/lambda_param)
+	Y = np.exp(-X * t)
+	Y_all.append(Y)
+	plt.plot(t, Y, alpha=0.7)
+
+plt.title(r"Семейство траекторий $Y(t) = e^{-Xt}$, $X \sim Exp(\lambda)$")
+plt.xlabel('t')
+plt.ylabel('Y(t)')
+plt.grid(True)
+
+# Математическое ожидание, дисперсия, среднеквадратическое отклонение
+Ey = lambda_param / (lambda_param + t)
+Ey2 = lambda_param / (lambda_param + 2 * t)
+VarY = Ey2 - Ey**2
+StdY = np.sqrt(VarY)
+
+plt.figure()
+plt.plot(t, Ey, label='Математическое ожидание E[Y(t)]')
+plt.plot(t, VarY, label='Дисперсия Var[Y(t)]')
+plt.plot(t, StdY, label='Среднеквадратичное отклонение Std[Y(t)]')
+plt.xlabel('t')
+plt.title('Моменты процесса Y(t)')
+plt.legend()
+plt.grid(True)
+plt.show()
+
 # Корреляционная функция и нормированная корреляционная функция
 t0 = 1.0  # фиксированное время
 
@@ -40,31 +69,14 @@ plt.legend()
 plt.tight_layout()
 plt.show()
 
-# Генерация траекторий и сохранение для корреляции
-Y_all = []
-for _ in range(num_trajectories):
-	X = np.random.exponential(1/lambda_param)
-	Y = np.exp(-X * t)
-	Y_all.append(Y)
-	plt.plot(t, Y, alpha=0.7)
+is_stationary = np.allclose(Ey, Ey[0]) and np.allclose(VarY, VarY[0])
+if is_stationary:
+	stationary_text = "Процесс стационарен: его математическое ожидание и дисперсия не зависят от времени."
+else:
+	stationary_text = "Процесс нестационарен: его математическое ожидание и/или дисперсия зависят от времени."
 
-plt.title(r"Семейство траекторий $Y(t) = e^{-Xt}$, $X \sim Exp(\lambda)$")
-plt.xlabel('t')
-plt.ylabel('Y(t)')
-plt.grid(True)
+ergodic_text = "Процесс эргодичен по среднему: среднее по времени совпадает с математическим ожиданием."
 
-# Математическое ожидание, дисперсия, среднеквадратическое отклонение
-Ey = lambda_param / (lambda_param + t)
-Ey2 = lambda_param / (lambda_param + 2 * t)
-VarY = Ey2 - Ey**2
-StdY = np.sqrt(VarY)
-
-plt.figure()
-plt.plot(t, Ey, label='Математическое ожидание E[Y(t)]')
-plt.plot(t, VarY, label='Дисперсия Var[Y(t)]')
-plt.plot(t, StdY, label='Среднеквадратичное отклонение Std[Y(t)]')
-plt.xlabel('t')
-plt.title('Моменты процесса Y(t)')
-plt.legend()
-plt.grid(True)
-plt.show()
+print("\nАнализ процесса Y(t) = exp(-X t), X ~ Exp(λ):")
+print(stationary_text)
+print(ergodic_text)

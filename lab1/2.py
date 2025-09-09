@@ -1,50 +1,52 @@
-# These modules make it easier to perform the calculation
+
+# Эти модули упрощают выполнение вычислений
 import numpy as np
 from scipy import stats
 
-# We'll define a function that we can call to return the correlation calculations
+# Определим функцию, которую можно вызвать для возврата расчетов корреляции
 def calculate_correlation(array1, array2):
-
-    # Calculate Pearson correlation coefficient and p-value
+    # Вычислить коэффициент корреляции Пирсона и p-значение
     correlation, p_value = stats.pearsonr(array1, array2)
-
-    # Calculate R-squared as the square of the correlation coefficient
+    # Вычислить R-квадрат как квадрат коэффициента корреляции
     r_squared = correlation**2
-
     return correlation, r_squared, p_value
 
-# These are the arrays for the variables shown on this page, but you can modify them to be any two sets of numbers
+
+# Это массивы для переменных, показанных на этой странице, но вы можете изменить их на любые два набора чисел
 import matplotlib.pyplot as plt
 
 array_1 = np.array([283,308,326,435,697,814,1384,1357,1417,1625,1616,])
 array_2 = np.array([9.59021,9.59326,9.64526,9.85696,10.176,10.4024,11.0865,11.2123,11.1567,11.1287,11.4113,])
-array_1_name = "Associates degrees awarded in Philosophy and religious studies"
-array_2_name = "Cheddar cheese consumption"
+array_1_name = "Количество выданных степеней по философии и религиоведению"
+array_2_name = "Потребление сыра чеддер"
 
 
-# Perform the calculation
-print(f"Calculating the correlation between {array_1_name} and {array_2_name}...")
+
+# Выполнить расчет
+print(f"Вычисление корреляции между '{array_1_name}' и '{array_2_name}'...")
 correlation, r_squared, p_value = calculate_correlation(array_1, array_2)
 
-# Print the results
-print("Correlation Coefficient:", correlation)
-print("R-squared:", r_squared)
-print("P-value:", p_value)
+# Вывести результаты
+print("Коэффициент корреляции:", correlation)
+print("R-квадрат:", r_squared)
+print("P-значение:", p_value)
+
 
 # Расчет коэффициентов линейного тренда для каждого ряда по годам
 years = np.arange(2011, 2022)
-trend1 = np.polyfit(years, array_1, 1)  # [slope, intercept]
+trend1 = np.polyfit(years, array_1, 1)  # [наклон, свободный член]
 trend2 = np.polyfit(years, array_2, 1)
 
 print(f"\nКоэффициенты линейного тренда для {array_1_name} (по годам):")
 print(f"  Уравнение: y = {trend1[0]:.4f} * x + {trend1[1]:.4f}")
-print(f"  Наклон (slope): {trend1[0]:.4f}")
-print(f"  Свободный член (intercept): {trend1[1]:.4f}")
+print(f"  Наклон: {trend1[0]:.4f}")
+print(f"  Свободный член: {trend1[1]:.4f}")
 
 print(f"\nКоэффициенты линейного тренда для {array_2_name} (по годам):")
 print(f"  Уравнение: y = {trend2[0]:.4f} * x + {trend2[1]:.4f}")
-print(f"  Наклон (slope): {trend2[0]:.4f}")
-print(f"  Свободный член (intercept): {trend2[1]:.4f}")
+print(f"  Наклон: {trend2[0]:.4f}")
+print(f"  Свободный член: {trend2[1]:.4f}")
+
 
 # Расчет значений по тренду для каждого ряда
 trend_values_1 = trend1[0] * years + trend1[1]
@@ -53,7 +55,6 @@ trend_values_2 = trend2[0] * years + trend2[1]
 print(f"\nЗначения по тренду для {array_1_name}:")
 for year, value in zip(years, trend_values_1):
     print(f"  {year}: {value:.2f}")
-
 
 print(f"\nЗначения по тренду для {array_2_name}:")
 for year, value in zip(years, trend_values_2):
@@ -96,9 +97,9 @@ plt.show()
 # Корреляция между остатками
 correlation_resid, r2_resid, p_resid = calculate_correlation(residuals_1, residuals_2)
 print(f"\nКорреляция между остатками:")
-print("  Correlation Coefficient:", correlation_resid)
-print("  R-squared:", r2_resid)
-print("  P-value:", p_resid)
+print("  Коэффициент корреляции:", correlation_resid)
+print("  R-квадрат:", r2_resid)
+print("  P-значение:", p_resid)
 
 # Построение графика с двумя осями Y по годам
 fig, ax1 = plt.subplots(figsize=(8, 5))
