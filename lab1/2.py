@@ -3,6 +3,7 @@
 # These modules make it easier to perform the calculation
 import numpy as np
 from scipy import stats
+import matplotlib.pyplot as plt
 
 # We'll define a function that we can call to return the correlation calculations
 def calculate_correlation(array1, array2):
@@ -20,8 +21,6 @@ array_1 = np.array([283,308,326,435,697,814,1384,1357,1417,1625,1616,])
 array_2 = np.array([9.59021,9.59326,9.64526,9.85696,10.176,10.4024,11.0865,11.2123,11.1567,11.1287,11.4113,])
 array_1_name = "Associates degrees awarded in Philosophy and religious studies"
 array_2_name = "Cheddar cheese consumption"
-
-import matplotlib.pyplot as plt
 
 # Построение графиков для двух динамических рядов в одной системе координат
 years = np.arange(1, len(array_1) + 1)
@@ -44,26 +43,8 @@ ax2.tick_params(axis='y', labelcolor='tab:orange')
 fig.suptitle('Динамические ряды (общая ось X, отдельные оси Y)')
 fig.tight_layout(rect=[0, 0, 1, 0.96])
 
-# Сохраняем изображение
-output_path = 'dynamic_series.png'
-fig.savefig(output_path)
-
-# Показать график (если окружение позволяет)
-try:
-    plt.show()
-except Exception:
-    pass
-
-# Сохраним изображение файла, чтобы можно было проверить результат автоматически
-output_path = 'dynamic_series.png'
-plt.savefig(output_path)
-
-# Показать график (если окружение позволяет)
-try:
-    plt.show()
-except Exception:
-    # В некоторых окружениях (например, headless) show() может падать — уже сохранили файл
-    pass
+# Показать график 
+plt.show()
 
 # Perform the calculation
 print(f"Calculating the correlation between {array_1_name} and {array_2_name}...")
