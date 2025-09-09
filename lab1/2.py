@@ -29,6 +29,14 @@ print("Correlation Coefficient:", correlation)
 print("R-squared:", r_squared)
 print("P-value:", p_value)
 
+# Расчёт коэффициентов тренда для каждого ряда
+trend_array_1 = np.polyfit(range(len(array_1)), array_1, 1)
+trend_array_2 = np.polyfit(range(len(array_2)), array_2, 1)
+
+# Вывод коэффициентов тренда
+print(f"Коэффициенты тренда для {array_1_name}: {trend_array_1}")
+print(f"Коэффициенты тренда для {array_2_name}: {trend_array_2}")
+
 # Нормализация данных для корректного отображения на графике
 normalized_array_1 = (array_1 - np.min(array_1)) / (np.max(array_1) - np.min(array_1))
 normalized_array_2 = (array_2 - np.min(array_2)) / (np.max(array_2) - np.min(array_2))
