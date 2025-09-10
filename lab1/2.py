@@ -1,3 +1,4 @@
+# https://tylervigen.com/spurious/correlation/14685_associates-degrees-awarded-in-philosophy-and-religious-studies_correlates-with_cheddar-cheese-consumption
 
 # Эти модули упрощают выполнение вычислений
 import numpy as np
