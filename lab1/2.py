@@ -1,111 +1,89 @@
-# https://tylervigen.com/spurious/correlation/14685_associates-degrees-awarded-in-philosophy-and-religious-studies_correlates-with_cheddar-cheese-consumption
+# https://www.tylervigen.com/spurious/correlation/5904_cheddar-cheese-consumption_correlates-with_solar-power-generated-in-haiti
 
 import numpy as np
 from scipy import stats
 import matplotlib.pyplot as plt
 
+# Функция для расчета корреляции
 def calculate_correlation(array1, array2):
-    # Коэффициент корреляции Пирсона и p-значение
-    correlation, p_value = stats.pearsonr(array1, array2)
-    # R-квадрат 
-    r_squared = correlation**2
-    return correlation, r_squared, p_value
+    correlation = stats.pearsonr(array1, array2)
+    return correlation[0]
 
-array_1 = np.array([283,308,326,435,697,814,1384,1357,1417,1625,1616,])
-array_2 = np.array([9.59021,9.59326,9.64526,9.85696,10.176,10.4024,11.0865,11.2123,11.1567,11.1287,11.4113,])
-array_1_name = "Количество выданных степеней по философии и религиоведению"
-array_2_name = "Потребление сыра чеддер"
+# Динамические ряды
+array_1 = np.array([9.59326,9.64526,9.85696,10.176,10.4024,11.0865,11.2123,11.1567,11.1287,11.4113,])
+array_2 = np.array([0.0009,0.0009,0.0009,0.002,0.002,0.003,0.003,0.003,0.003,0.00366,])
+array_1_name = "Потребление сыра Чеддер"
+array_2_name = "Выработка солнечной энергии в Гаити"
 
-fig, ax1 = plt.subplots(figsize=(8, 5))
+# Выполнение расчета
+correlation = calculate_correlation(array_1, array_2)
 
-print(f"Вычисление корреляции между '{array_1_name}' и '{array_2_name}'...")
-correlation, r_squared, p_value = calculate_correlation(array_1, array_2)
+# Печать результатов
+print(f"Коэффициент корреляции для {array_1_name} и {array_2_name}:", correlation)
 
-print("Коэффициент корреляции:", correlation)
-# print("R-квадрат:", r_squared)
-# print("P-значение:", p_value)
-
-# Расчет коэффициентов линейного тренда 
-years = np.arange(2011, 2022)
-trend1 = np.polyfit(years, array_1, 1)  
-trend2 = np.polyfit(years, array_2, 1)
+# Построение графика динамических рядов 
+fig, ax1 = plt.subplots()
+x = np.arange(1, len(array_1) + 1)
 
 color1 = 'tab:blue'
-ax1.set_xlabel('Год')
+ax1.set_xlabel('Наблюдение')
 ax1.set_ylabel(array_1_name, color=color1)
-ax1.plot(years, array_1, color=color1, marker='o', label=array_1_name)
+ax1.plot(x, array_1, color=color1, marker='o', label=array_1_name)
 ax1.tick_params(axis='y', labelcolor=color1)
 
 ax2 = ax1.twinx()
-color2 = 'tab:orange'
+color2 = 'tab:red'
 ax2.set_ylabel(array_2_name, color=color2)
-ax2.plot(years, array_2, color=color2, marker='s', label=array_2_name)
+ax2.plot(x, array_2, color=color2, marker='s', label=array_2_name)
 ax2.tick_params(axis='y', labelcolor=color2)
 
+fig.tight_layout()
 plt.title('Динамические ряды')
-fig.tight_layout()
-plt.grid(True)
 plt.show()
 
-print(f"\nКоэффициенты линейного тренда для {array_1_name}:")
-print(f"  Уравнение: y = {trend1[0]:.4f} * x + {trend1[1]:.4f}")
-print(f"  Наклон: {trend1[0]:.4f}")
-print(f"  Свободный член: {trend1[1]:.4f}")
+# Второй график: обе оси y начинаются с 0
+fig2, ax1_2 = plt.subplots()
+ax1_2.set_xlabel('Наблюдение')
+ax1_2.set_ylabel(array_1_name, color=color1)
+ax1_2.plot(x, array_1, color=color1, marker='o', label=array_1_name)
+ax1_2.tick_params(axis='y', labelcolor=color1)
+ax1_2.set_ylim(bottom=0)
 
-print(f"\nКоэффициенты линейного тренда для {array_2_name}:")
-print(f"  Уравнение: y = {trend2[0]:.4f} * x + {trend2[1]:.4f}")
-print(f"  Наклон: {trend2[0]:.4f}")
-print(f"  Свободный член: {trend2[1]:.4f}")
+ax2_2 = ax1_2.twinx()
+ax2_2.set_ylabel(array_2_name, color=color2)
+ax2_2.plot(x, array_2, color=color2, marker='s', label=array_2_name)
+ax2_2.tick_params(axis='y', labelcolor=color2)
+ax2_2.set_ylim(bottom=0)
 
-# Расчет значений по тренду 
-trend_values_1 = trend1[0] * years + trend1[1]
-trend_values_2 = trend2[0] * years + trend2[1]
-
-print(f"\nЗначения по тренду для {array_1_name}:")
-for year, value in zip(years, trend_values_1):
-    print(f"  {year}: {value:.2f}")
-
-print(f"\nЗначения по тренду для {array_2_name}:")
-for year, value in zip(years, trend_values_2):
-    print(f"  {year}: {value:.4f}")
-
-# Остатки 
-residuals_1 = array_1 - trend_values_1
-residuals_2 = array_2 - trend_values_2
-
-print(f"\nОстатки для {array_1_name}:")
-for year, value in zip(years, residuals_1):
-    print(f"  {year}: {value:.2f}")
-
-print(f"\nОстатки для {array_2_name}:")
-for year, value in zip(years, residuals_2):
-    print(f"  {year}: {value:.4f}")
-
-# График остатков 
-fig, ax1 = plt.subplots(figsize=(8, 5))
-
-color1 = 'tab:blue'
-ax1.set_xlabel('Год')
-ax1.set_ylabel(f'Остатки {array_1_name}', color=color1)
-ax1.plot(years, residuals_1, color=color1, marker='o', label=f'Остатки {array_1_name}')
-ax1.tick_params(axis='y', labelcolor=color1)
-ax1.axhline(0, color='gray', linestyle='--', linewidth=1)
-
-ax2 = ax1.twinx()
-color2 = 'tab:orange'
-ax2.set_ylabel(f'Остатки {array_2_name}', color=color2)
-ax2.plot(years, residuals_2, color=color2, marker='s', label=f'Остатки {array_2_name}')
-ax2.tick_params(axis='y', labelcolor=color2)
-ax2.axhline(0, color='gray', linestyle='--', linewidth=1)
-
-plt.title('Остатки')
-fig.tight_layout()
-plt.grid(True)
+fig2.tight_layout()
+plt.title('Динамические ряды (оси Y от 0)')
 plt.show()
+
+# Расчет коэффициентов тренда (a и b) для уравнения y = ax + b
+x = np.arange(1, len(array_1) + 1)
+
+# Для array_1
+coeffs1 = np.polyfit(x, array_1, 1)
+a1, b1 = coeffs1[0], coeffs1[1]
+print(f"\nКоэффициенты тренда для {array_1_name}: a = {a1:.4f}, b = {b1:.3f}")
+
+# Для array_2
+coeffs2 = np.polyfit(x, array_2, 1)
+a2, b2 = coeffs2[0], coeffs2[1]
+print(f"\nКоэффициенты тренда для {array_2_name}: a = {a2:.4f}, b = {b2:.4f}")
+
+# Расчет значений по тренду для каждого ряда
+trend_1 = a1 * x + b1
+trend_2 = a2 * x + b2
+print(f"\nЗначения по тренду для {array_1_name}: {np.round(trend_1, 4)}")
+print(f"\nЗначения по тренду для {array_2_name}: {np.round(trend_2, 5)}")
+
+# Расчет остатков
+residuals_1 = array_1 - trend_1
+residuals_2 = array_2 - trend_2
+print(f"\nОстатки для {array_1_name}: {np.round(residuals_1, 4)}")
+print(f"\nОстатки для {array_2_name}: {np.round(residuals_2, 5)}")
 
 # Корреляция между остатками
-correlation_resid, r2_resid, p_resid = calculate_correlation(residuals_1, residuals_2)
-print(f"\nКорреляция между остатками:")
-print("  Коэффициент корреляции:", correlation_resid)
-# print("  R-квадрат:", r2_resid)
-# print("  P-значение:", p_resid)
+resid_corr = calculate_correlation(residuals_1, residuals_2)
+print(f"\nКорреляция между остатками: {resid_corr}")
