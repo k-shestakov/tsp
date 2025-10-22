@@ -1,9 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-lambda_param = 2.0  # Интенсивность экспоненциального распределения
-num_trajectories = 10  # Количество траекторий
-t = np.linspace(0, 10, 500)  # Временная сетка
+lambda_param = 2.0
+num_trajectories = 10
+t = np.linspace(0, 10, 500)
 
 # Генерация траекторий 
 Y_all = []
