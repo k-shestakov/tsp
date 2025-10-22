@@ -24,7 +24,6 @@ def main():
 
 	count_6_14 = sum(6 <= w <= 14 for w in wagons_list)
 	percent_6_14 = count_6_14 / num_trains * 100
-	print(f"Процент поездов с 6-14 вагонами: {percent_6_14:.2f}%")
 
 	plt.figure(figsize=(8, 5))
 	plt.hist(wagons_list, bins=range(1, 22), edgecolor='black', align='left', rwidth=0.8)
@@ -41,6 +40,8 @@ def main():
 	print('-' * 38)
 	for idx, (wagons, arrival) in enumerate(zip(wagons_list, arrival_times), 1):
 		print(f"{idx:6} | {wagons:6} | {arrival:20.2f}")
+
+	print(f"Процент поездов с 6-14 вагонами: {percent_6_14:.2f}%")
 
 if __name__ == "__main__":
 	main()
