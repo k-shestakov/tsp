@@ -1,13 +1,11 @@
-# markov_sim.py
 import numpy as np
 import pandas as pd
-import json
 
 def simulate_markov(P, v0, m):
     v0 = np.array(v0, dtype=float).reshape(1,4)
     states = [v0.flatten()]
     v = v0.copy()
-    for k in range(1, m+1):
+    for _ in range(1, m+1):
         v = v @ P
         states.append(v.flatten())
     df = pd.DataFrame(states, columns=['s1','s2','s3','s4'])
