@@ -24,13 +24,23 @@ plt.show()
 print(f"Траектории процесса:\n{Y_all_np}\n")
 
 # Моменты процесса
-Ey_np = np.mean(Y_all_np, axis=0)
-VarY_np = np.var(Y_all_np, axis=0)
-StdY_np = np.std(Y_all_np, axis=0)
+def Ey_analytic(t, lam):
+    return lam / (lam + t)
+
+def VarY_analytic(t, lam):
+    return lam / (lam + 2*t) - (lam / (lam + t))**2
+
+def StdY_analytic(t, lam):
+    return np.sqrt(VarY_analytic(t, lam))
+
+Ey_np = Ey_analytic(t, lambda_param)
+VarY_np = VarY_analytic(t, lambda_param)
+StdY_np = StdY_analytic(t, lambda_param)
 
 plt.figure(figsize=(10,6))
-plt.plot(t, Ey_np, '--', label='Математическое ожидание', color='blue', alpha=0.6)
-plt.plot(t, StdY_np, '--', label='Среднеквадратическое отклонение', color='green', alpha=0.6)
+plt.plot(t, Ey_np, '--', label='E[Y(t)]', color='blue', alpha=0.6)
+plt.plot(t, Ey_np - StdY_np, '--', label='E[Y(t)] - σ[Y(t)]', color='red', alpha=0.6)
+plt.plot(t, Ey_np + StdY_np, '--', label='E[Y(t)] + σ[Y(t)]', color='green', alpha=0.6)
 plt.xlabel('t')
 plt.title('Моменты процесса Y(t)')
 plt.legend()
@@ -51,13 +61,28 @@ def R(t1, t2):
 def rho(t1, t2):
     return np.sqrt((lambda_param + 2*t1) * (lambda_param + 2*t2)) / (lambda_param + t1 + t2)
 
-R_vals = [R(t0, t0 + d) for d in t]
-rho_vals = [rho(t0, t0 + d) for d in t]
+taus = t
+R_mean = []
+rho_mean = []
+for tau in taus:
+    vals_R = []
+    vals_rho = []
+    for t1 in t:
+        t2 = t1 + tau
+        if t2 <= t[-1]:
+            vals_R.append(R(t1, t2))
+            vals_rho.append(rho(t1, t2))
+    if vals_R:
+        R_mean.append(np.mean(vals_R))
+        rho_mean.append(np.mean(vals_rho))
+    else:
+        R_mean.append(np.nan)
+        rho_mean.append(np.nan)
 
 plt.figure(figsize=(12,5))
 
 plt.subplot(1,2,1)
-plt.plot(t, R_vals, label=f"R(t, t+τ), t={t0}")
+plt.plot(t, R_mean, label=f"R(t, t+τ), t={t0}")
 plt.xlabel("τ")
 plt.ylabel("R")
 plt.title("Корреляционная функция")
@@ -65,16 +90,3 @@ plt.grid(True)
 plt.legend()
 
 plt.subplot(1,2,2)
-plt.plot(t, rho_vals, label=f"ρ(t, t+τ), t={t0}")
-plt.xlabel("τ")
-plt.ylabel("ρ")
-plt.title("Нормированная корреляционная функция")
-plt.grid(True)
-plt.legend()
-
-plt.tight_layout()
-plt.show()
-
-print("Анализ процесса Y(t) = exp(-X t), X ~ Exp(λ):")
-print("Процесс нестационарен: его математическое ожидание и дисперсия зависят от времени.")
-print("Процесс эргодичен по среднему: среднее по времени совпадает с математическим ожиданием.")
