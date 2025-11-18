@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 
 # Данные временного ряда
 years = np.array([
@@ -19,9 +20,7 @@ plt.grid(True)
 plt.tight_layout()
 plt.show()
 
-# Корреллограмма (автокорреляция)
-from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
-
+# График автокорреляционной функции
 plot_acf(spending, lags=20)
 plt.title('График автокорреляционной функции расходов на свежие фрукты')
 plt.xlabel('Лаг')
@@ -29,10 +28,20 @@ plt.ylabel('Автокорреляция')
 plt.tight_layout()
 plt.show()
 
-# График частной автокорреляционной функции (PACF)
+# График частной автокорреляционной функции
 plot_pacf(spending, lags=10, method='ywm')
 plt.title('График частной автокорреляционной функции расходов на свежие фрукты')
 plt.xlabel('Лаг')
 plt.ylabel('Частная автокорреляция')
 plt.tight_layout()
 plt.show()
+
+# Поиск выбросов методом межквартильного размаха
+Q1 = np.percentile(spending, 25)
+Q3 = np.percentile(spending, 75)
+IQR = Q3 - Q1
+lower_bound = Q1 - 1.5 * IQR
+upper_bound = Q3 + 1.5 * IQR
+outlier_indices = [i for i, value in enumerate(spending) if value < lower_bound or value > upper_bound]
+print("Индексы выбросов в исходном ряде:")
+print(outlier_indices)
