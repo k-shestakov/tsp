@@ -5,6 +5,7 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error
 import pandas as pd
 from statsmodels.tsa.holtwinters import Holt
 from statsmodels.tsa.arima.model import ARIMA
+from statsmodels.stats.diagnostic import acorr_ljungbox
 import warnings
 
 warnings.filterwarnings('ignore')
@@ -136,6 +137,19 @@ plt.ylabel('Автокорреляция')
 plt.tight_layout()
 plt.show()
 
+# Тест Бокса-Льюнга для остатков (Хольт)
+if len(residuals) >= 2:
+    lb_lags = min(10, len(residuals) - 1)
+    try:
+        lb_result = acorr_ljungbox(residuals, lags=[lb_lags], return_df=True)
+        lb_stat = lb_result['lb_stat'].iloc[-1]
+        lb_pvalue = lb_result['lb_pvalue'].iloc[-1]
+        print(f"\nBox-Ljung test (Holt) — lag={lb_lags}: LB stat={lb_stat:.3f}, p-value={lb_pvalue:.3f}")
+    except Exception as e:
+        print(f"\nBox-Ljung test (Holt) failed: {e}")
+else:
+    print("\nBox-Ljung test (Holt) — not enough residuals to perform the test.")
+
 print("\nМодель ARIMA")
 # Перебор параметров p, d, q с записью MAE, MSE, MAPE (ARIMA)
 p_range = range(0, 4)
@@ -163,6 +177,25 @@ for p in p_range:
                 })
             except Exception:
                 continue
+
+model2 = ARIMA(spending_train, order=(2, 1, 2))
+mae_v2 = mean_absolute_error(spending_test, model2.fit().forecast(len(spending_test)))
+mse_v2 = mean_squared_error(spending_test, model2.fit().forecast(len(spending_test)))
+mape_v2 = np.mean(np.abs((spending_test - model2.fit().forecast(len(spending_test))) / spending_test)) * 100
+
+print (mae_v2, mse_v2, mape_v2)
+
+plt.figure(figsize=(12, 6))
+plt.plot(years, spending, marker='o', label='Исходные данные', color='b')
+plt.plot(years_test, model2.fit().forecast(len(spending_test)), marker='d', linestyle='--', label=f'ARIMA прогноз', color='g')
+plt.title('Исходные данные и прогноз (ARIMA)')
+plt.xlabel('Год')
+plt.ylabel('Траты (доллары на человека в год)')
+plt.legend()
+plt.grid(True)
+plt.tight_layout()
+plt.show()
+
 
 df_arima = pd.DataFrame(arima_results)
 df_arima = df_arima.sort_values(by=['MAPE', 'MAE']).reset_index(drop=True)
@@ -215,3 +248,11 @@ plt.xlabel('Лаг')
 plt.ylabel('Автокорреляция')
 plt.tight_layout()
 plt.show()
+
+# Тест Бокса-Льюнга для остатков (ARIMA)
+if len(arima_resid) >= 2:
+    lb_lags = min(10, len(arima_resid) - 1)
+    lb_result = acorr_ljungbox(arima_resid, lags=[lb_lags], return_df=True)
+    lb_stat = lb_result['lb_stat'].iloc[-1]
+    lb_pvalue = lb_result['lb_pvalue'].iloc[-1]
+    print(f"\np-value={lb_pvalue:.3f}")
